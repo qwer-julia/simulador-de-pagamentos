@@ -1,0 +1,69 @@
+﻿@model BenefitsManager.Models.Taxpayer
+
+@{
+    ViewData["Title"] = "Editar";
+}
+<section>
+    <h1>Editar contribuinte</h1>
+
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+                <div class="form-group">
+                    <label asp-for="Cnpj" class="control-label"></label>
+                    <input asp-for="Cnpj" class="form-control" />
+                    <span asp-validation-for="Cnpj" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CompanyName" class="control-label"></label>
+                    <input asp-for="CompanyName" class="form-control" />
+                    <span asp-validation-for="CompanyName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="OpeningDate" class="control-label"></label>
+                    <input asp-for="OpeningDate" class="form-control" type="date" />
+                    <span asp-validation-for="OpeningDate" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="TaxationRegime" class="control-label"></label>
+                    <input asp-for="TaxationRegime" class="form-control" />
+                    <span asp-validation-for="TaxationRegime" class="text-danger"></span>
+                </div>
+
+                <div class="benefit-form">
+                    <h4>Benefícios:</h4>
+
+                    @foreach (var benefit in ViewBag.Benefits)
+                    {
+                        <div class="benefit-option">
+                            @if (Convert.ToBoolean(Model.TaxpayerBenefits.Any((tb => tb.BenefitId == @benefit.Id))))
+                            {
+                                <input type="checkbox" name="SelectedBenefits" value="@benefit.Id" checked />
+                            }
+                            else
+                            {
+                                <input type="checkbox" name="SelectedBenefits" value="@benefit.Id" />
+                            }
+
+                            <label>@benefit.Name (@benefit.DiscountPercentage%)</label>
+                        </div>
+                    }
+                    <input type="hidden" name="SelectedBenefits" value="1" checked />
+                </div>
+                <div>
+                    <input type="submit" value="Salvar" class="button" />
+                    <a class="button-back" asp-action="Index">Voltar</a>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

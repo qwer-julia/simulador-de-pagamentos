@@ -1,0 +1,38 @@
+﻿@model BenefitsManager.Models.Benefit
+
+@{
+    ViewData["Title"] = "Editar";
+}
+
+<section>
+    <h1>Editar Benefício</h1>
+
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="DiscountPercentage" class="control-label"></label>
+                    <input asp-for="DiscountPercentage" class="form-control" type="number" />
+                    <span asp-validation-for="DiscountPercentage" class="text-danger"></span>
+                </div>
+                <div class="form-group group-buttons">
+                    <input type="submit" value="Salvar" class="button" />
+                    <a class="button-back" asp-action="Index">Voltar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

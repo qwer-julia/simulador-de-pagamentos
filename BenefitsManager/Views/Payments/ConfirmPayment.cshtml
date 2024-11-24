@@ -1,0 +1,25 @@
+﻿@model Payment
+
+@{
+    ViewData["Title"] = "Confirmar";
+}
+
+<section>
+    <h2>Confirme os Detalhes do Pagamento</h2>
+
+    <div>
+        <p><strong>Nome do Contribuinte:</strong> @Model.Taxpayer.CompanyName</p>
+        <p><strong>Benefício:</strong> @Model.Benefit.Name</p>
+        <p><strong>Valor Inicial:</strong> @Model.InitialValue</p>
+        <p><strong>Valor com Desconto:</strong> @Model.FinalValue</p>
+    </div>
+
+    <form asp-action="SavePayment" method="post">
+        <input type="hidden" asp-for="TaxpayerId" />
+        <input type="hidden" asp-for="BenefitId" />
+        <input type="hidden" asp-for="InitialValue" />
+        <input type="hidden" asp-for="FinalValue" />
+        <button type="submit" class="button">Confirmar e Salvar</button>
+        <a asp-action="Create" class="button-back">Cancelar</a>
+    </form>
+</section>
