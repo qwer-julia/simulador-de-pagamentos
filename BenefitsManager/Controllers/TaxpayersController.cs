@@ -127,6 +127,9 @@ namespace BenefitsManager.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Cnpj,CompanyName,OpeningDate,TaxationRegime")] Taxpayer taxpayer, List<int> SelectedBenefits)
         {
+            var benefits = await _context.Benefits.ToListAsync();
+            ViewBag.Benefits = benefits;
+
             var taxpayerFromDb = await _context.Taxpayers
             .Include(t => t.TaxpayerBenefits)
             .ThenInclude(tb => tb.Benefit)
@@ -143,13 +146,26 @@ namespace BenefitsManager.Controllers
                 {
                     _mapper.Map(taxpayer, taxpayerFromDb);
 
+                    var validationResult = ValidateCnpj(taxpayer.Cnpj);
+                    if (validationResult != "true")
+                    {
+                        ModelState.AddModelError("Cnpj", validationResult);
+                        taxpayer = await _context.Taxpayers
+                        .Include(t => t.TaxpayerBenefits)
+                        .ThenInclude(tb => tb.Benefit)
+                        .FirstOrDefaultAsync(t => t.Id == id);
+                        return View(taxpayer);
+                    }
+                    var numericCnpj = string.Concat(taxpayer.Cnpj.Where(char.IsDigit));
+                    taxpayer.Cnpj = FormatCNPJ(numericCnpj);
+
                     var existingBenefitIds = taxpayerFromDb.TaxpayerBenefits.Select(tb => tb.BenefitId).ToList();
                     var benefitsToRemove = taxpayerFromDb?.TaxpayerBenefits?
                     .Where(tb => !SelectedBenefits.Contains(tb.BenefitId))
                     .ToList();
 
                     var benefitsToAdd = SelectedBenefits
-                    .Where(id => !existingBenefitIds.Contains(id))
+                    .Where(id => !existingBenefitIds.Contains(id))      
                     .Select(id => new TaxpayerBenefit { TaxpayerId = taxpayer.Id, BenefitId = id })
                     .ToList();
 
@@ -175,8 +191,6 @@ namespace BenefitsManager.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            var benefits = await _context.Benefits.ToListAsync();
-            ViewBag.Benefits = benefits;
             return View(taxpayer);
         }
 
