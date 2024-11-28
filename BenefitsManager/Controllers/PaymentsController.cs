@@ -66,6 +66,8 @@ namespace BenefitsManager.Controllers
                 .ThenInclude(tb => tb.Benefit)
                 .FirstOrDefaultAsync(t => t.Cnpj == cnpj);
 
+            // verificar necessidade de include
+
             if (taxpayer == null)
             {
                 Console.WriteLine("NAO ENCONTRADO");
@@ -139,7 +141,6 @@ namespace BenefitsManager.Controllers
         public IActionResult ConfirmPayment()
         {
             var paymentJson = HttpContext.Session.GetString("PaymentData");
-            Console.WriteLine(paymentJson);
             var payment = JsonConvert.DeserializeObject<Payment>(paymentJson);
 
             return View(payment);
