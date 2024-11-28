@@ -60,8 +60,6 @@ namespace BenefitsManager.Controllers
         }
 
         // POST: Taxpayers/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Cnpj,CompanyName,OpeningDate,TaxationRegime")] Taxpayer taxpayer, List<int> SelectedBenefits)
@@ -77,6 +75,11 @@ namespace BenefitsManager.Controllers
                 }
                 var numericCnpj = string.Concat(taxpayer.Cnpj.Where(char.IsDigit));
                 taxpayer.Cnpj = FormatCNPJ(numericCnpj);
+                if (_context.Taxpayers.Any(t => t.Cnpj == taxpayer.Cnpj))
+                {
+                    ModelState.AddModelError("Cnpj", "O número do CNPJ já está cadastrado.");
+                    return View(taxpayer);
+                };
                 _context.Add(taxpayer);
                 await _context.SaveChangesAsync();
 
@@ -121,8 +124,6 @@ namespace BenefitsManager.Controllers
         }
 
         // POST: Taxpayers/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Cnpj,CompanyName,OpeningDate,TaxationRegime")] Taxpayer taxpayer, List<int> SelectedBenefits)
@@ -145,19 +146,22 @@ namespace BenefitsManager.Controllers
                 try
                 {
                     _mapper.Map(taxpayer, taxpayerFromDb);
+                    
 
                     var validationResult = ValidateCnpj(taxpayer.Cnpj);
                     if (validationResult != "true")
                     {
                         ModelState.AddModelError("Cnpj", validationResult);
-                        taxpayer = await _context.Taxpayers
-                        .Include(t => t.TaxpayerBenefits)
-                        .ThenInclude(tb => tb.Benefit)
-                        .FirstOrDefaultAsync(t => t.Id == id);
-                        return View(taxpayer);
+                        return View(taxpayerFromDb);
                     }
-                    var numericCnpj = string.Concat(taxpayer.Cnpj.Where(char.IsDigit));
-                    taxpayer.Cnpj = FormatCNPJ(numericCnpj);
+
+                    taxpayer.Cnpj = FormatCNPJ(taxpayer.Cnpj);
+
+                    if (_context.Taxpayers.Any(t => t.Cnpj == taxpayer.Cnpj && t.Id != taxpayer.Id))
+                    {
+                        ModelState.AddModelError("Cnpj", "O número do CNPJ já está cadastrado.");
+                        return View(taxpayerFromDb);
+                    }
 
                     var existingBenefitIds = taxpayerFromDb.TaxpayerBenefits.Select(tb => tb.BenefitId).ToList();
                     var benefitsToRemove = taxpayerFromDb?.TaxpayerBenefits?
@@ -181,7 +185,7 @@ namespace BenefitsManager.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!TaxpayerExists(taxpayer.Id))
-                    {
+                    {   
                         return NotFound();
                     }
                     else
@@ -189,9 +193,8 @@ namespace BenefitsManager.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(taxpayer);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Taxpayers/Delete/5
@@ -204,6 +207,7 @@ namespace BenefitsManager.Controllers
 
             var taxpayer = await _context.Taxpayers
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (taxpayer == null)
             {
                 return NotFound();
@@ -234,7 +238,8 @@ namespace BenefitsManager.Controllers
 
         private string FormatCNPJ(string cnpj)
         {
-            return Convert.ToUInt64(cnpj).ToString(@"00\.000\.000\/0000\-00");
+            var numericCnpj = string.Concat(cnpj.Where(char.IsDigit));
+            return Convert.ToUInt64(numericCnpj).ToString(@"00\.000\.000\/0000\-00");
         }
 
         private string ValidateCnpj(string cnpj)

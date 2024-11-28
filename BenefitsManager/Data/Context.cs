@@ -17,6 +17,10 @@ namespace BenefitsManager.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Taxpayer>()
+            .HasIndex(t => t.Cnpj)
+            .IsUnique();
+
             modelBuilder.Entity<TaxpayerBenefit>()
                 .HasKey(tb => new { tb.TaxpayerId, tb.BenefitId });
 

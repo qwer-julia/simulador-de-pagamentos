@@ -9,6 +9,7 @@ using BenefitsManager.Data;
 using BenefitsManager.Models;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 namespace BenefitsManager.Controllers
 {
@@ -59,6 +60,7 @@ namespace BenefitsManager.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SearchTaxpayer(string cnpj)
         {
+            cnpj = Regex.Replace(cnpj, @"\s+", "");
             var taxpayer = await _context.Taxpayers
                 .Include(t => t.TaxpayerBenefits)
                 .ThenInclude(tb => tb.Benefit)

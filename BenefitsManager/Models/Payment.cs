@@ -15,9 +15,11 @@ namespace BenefitsManager.Models
         public float FinalValue { get; set; }
 
         public int TaxpayerId { get; set; }
+        [Display(Name = "CNPJ do Contribuinte")]
         public Taxpayer Taxpayer { get; set; }
 
         public int? BenefitId { get; set; }
+        [Display(Name = "Nome do Benefício")]
         public Benefit? Benefit { get;    set; }
     }
 }
