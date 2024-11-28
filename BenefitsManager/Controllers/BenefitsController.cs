@@ -122,6 +122,7 @@ namespace BenefitsManager.Controllers
                 {
                     _context.Update(benefit);
                     await _context.SaveChangesAsync();
+                    //verificar se será necessário atualizar também os cadastros de pagamento ja vinculados à esse contribuinte
                 }
                 catch (DbUpdateConcurrencyException)
                 {
