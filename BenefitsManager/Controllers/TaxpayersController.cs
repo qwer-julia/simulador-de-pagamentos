@@ -65,21 +65,17 @@ namespace BenefitsManager.Controllers
         public async Task<IActionResult> Create([Bind("Id,Cnpj,CompanyName,OpeningDate,TaxationRegime")] Taxpayer taxpayer, List<int> SelectedBenefits)
         {
             ViewBag.Benefits = _context.Benefits.ToList();
+            Console.WriteLine(taxpayer.Cnpj);
+            Console.WriteLine(taxpayer.Cnpj.GetType());
+
+            if (CnpjAlreadyInUse(taxpayer.Cnpj, taxpayer.Id))
+            {
+                ModelState.AddModelError("Cnpj", "CNPJ já cadastrado");
+                return View(taxpayer);
+            }
+
             if (ModelState.IsValid)
             {
-                var validationResult = ValidateCnpj(taxpayer.Cnpj);
-                if (validationResult != "true")
-                {
-                    ModelState.AddModelError("Cnpj", validationResult);
-                    return View(taxpayer);
-                }
-                var numericCnpj = string.Concat(taxpayer.Cnpj.Where(char.IsDigit));
-                taxpayer.Cnpj = FormatCNPJ(numericCnpj);
-                if (_context.Taxpayers.Any(t => t.Cnpj == taxpayer.Cnpj))
-                {
-                    ModelState.AddModelError("Cnpj", "O número do CNPJ já está cadastrado.");
-                    return View(taxpayer);
-                };
                 _context.Add(taxpayer);
                 await _context.SaveChangesAsync();
 
@@ -141,27 +137,17 @@ namespace BenefitsManager.Controllers
                 return NotFound();
             }
 
+            if (CnpjAlreadyInUse(taxpayer.Cnpj, id))
+            {
+                ModelState.AddModelError("Cnpj", "CNPJ já cadastrado");
+                return View(taxpayer);
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
                     _mapper.Map(taxpayer, taxpayerFromDb);
-                    
-
-                    var validationResult = ValidateCnpj(taxpayer.Cnpj);
-                    if (validationResult != "true")
-                    {
-                        ModelState.AddModelError("Cnpj", validationResult);
-                        return View(taxpayerFromDb);
-                    }
-
-                    taxpayer.Cnpj = FormatCNPJ(taxpayer.Cnpj);
-
-                    if (_context.Taxpayers.Any(t => t.Cnpj == taxpayer.Cnpj && t.Id != taxpayer.Id))
-                    {
-                        ModelState.AddModelError("Cnpj", "O número do CNPJ já está cadastrado.");
-                        return View(taxpayerFromDb);
-                    }
 
                     var existingBenefitIds = taxpayerFromDb.TaxpayerBenefits.Select(tb => tb.BenefitId).ToList();
                     var benefitsToRemove = taxpayerFromDb?.TaxpayerBenefits?
@@ -169,7 +155,7 @@ namespace BenefitsManager.Controllers
                     .ToList();
 
                     var benefitsToAdd = SelectedBenefits
-                    .Where(id => !existingBenefitIds.Contains(id))      
+                    .Where(id => !existingBenefitIds.Contains(id))
                     .Select(id => new TaxpayerBenefit { TaxpayerId = taxpayer.Id, BenefitId = id })
                     .ToList();
 
@@ -185,7 +171,7 @@ namespace BenefitsManager.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!TaxpayerExists(taxpayer.Id))
-                    {   
+                    {
                         return NotFound();
                     }
                     else
@@ -236,31 +222,9 @@ namespace BenefitsManager.Controllers
             return _context.Taxpayers.Any(e => e.Id == id);
         }
 
-        private string FormatCNPJ(string cnpj)
+        private bool CnpjAlreadyInUse(long cnpj, int id)
         {
-            var numericCnpj = string.Concat(cnpj.Where(char.IsDigit));
-            return Convert.ToUInt64(numericCnpj).ToString(@"00\.000\.000\/0000\-00");
-        }
-
-        private string ValidateCnpj(string cnpj)
-        {
-            var numericCnpj = string.Concat(cnpj.Where(char.IsDigit));
-
-            if (cnpj.All(char.IsDigit) && cnpj.Length == 14)
-            {
-                return "true";
-            } else if (cnpj.All(char.IsDigit) && cnpj.Length != 14)
-            {
-                return "O CNPJ deve possuir 14 números";
-            } else if (!cnpj.All(char.IsDigit) && (string.IsNullOrEmpty(numericCnpj) || cnpj != FormatCNPJ(numericCnpj)))
-            {
-                return "Formato inválido, favor seguir o padrão: 00.000.000/0000-00 ou insira apenas números";
-            } else if(!cnpj.All(char.IsDigit) && cnpj == FormatCNPJ(numericCnpj))
-            {
-                return "true";
-            }
-
-            return "Erro desconhecido. Favor seguir o padrão: 00.000.000/0000-00 ou insira apenas números.";
-        }
+            return _context.Taxpayers.Any(t => t.Cnpj == cnpj && t.Id != id);
+        }        
     }
 }

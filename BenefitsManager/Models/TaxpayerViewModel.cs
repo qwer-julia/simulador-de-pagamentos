@@ -2,14 +2,14 @@
 
 namespace BenefitsManager.Models
 {
-    public class Taxpayer
+    public class TaxpayerViewModel
     {
+        [Required(ErrorMessage = "O CNPJ é obrigatório.")]
+        [StringLength(18, ErrorMessage = "O CNPJ deve ter no máximo 18 caracteres com máscara.")]
+        public string Cnpj { get; set; }
+
         [Display(Name = "Código")]
         public int Id { get; set; }
-
-        [Display(Name = "CNPJ")]
-        [Required(ErrorMessage = "Digite o CNPJ.")]
-        public long Cnpj { get; set; }
 
         [Display(Name = "Razão Social")]
         [Required(ErrorMessage = "Digite a Razão Social.")]

@@ -58,9 +58,8 @@ namespace BenefitsManager.Controllers
         // POST: Payments/SearchTaxpayer
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SearchTaxpayer(string cnpj)
+        public async Task<IActionResult> SearchTaxpayer(long cnpj)
         {
-            cnpj = Regex.Replace(cnpj, @"\s+", "");
             var taxpayer = await _context.Taxpayers
                 .Include(t => t.TaxpayerBenefits)
                 .ThenInclude(tb => tb.Benefit)

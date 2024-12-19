@@ -32,7 +32,7 @@ namespace BenefitsManager.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Cnpj = table.Column<string>(type: "text", nullable: false),
+                    Cnpj = table.Column<long>(type: "bigint", nullable: false),
                     CompanyName = table.Column<string>(type: "text", nullable: false),
                     OpeningDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     TaxationRegime = table.Column<string>(type: "text", nullable: false)
