@@ -24,7 +24,6 @@ namespace BenefitsManager.Controllers
         public async Task<IActionResult> Index()
         {
             var benefits = await _context.Benefits
-                .Where(b => b.Id != 1)
                 .GroupJoin(_context.TaxpayerBenefits,
                     b => b.Id,              
                     tb => tb.BenefitId,    

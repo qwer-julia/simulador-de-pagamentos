@@ -39,7 +39,7 @@
                     @foreach (var benefit in ViewBag.Benefits)
                     {
                         <div class="benefit-option">
-                            @if (Convert.ToBoolean(Model.TaxpayerBenefits.Any((tb => tb.BenefitId == @benefit.Id))))
+                            @if (Model.TaxpayerBenefits != null && Model.TaxpayerBenefits.Any(tb => tb.BenefitId == benefit.Id))
                             {
                                 <input type="checkbox" name="SelectedBenefits" value="@benefit.Id" checked />
                             }
@@ -50,8 +50,11 @@
 
                             <label>@benefit.Name (@benefit.DiscountPercentage%)</label>
                         </div>
+
                     }
-                    <input type="hidden" name="SelectedBenefits" value="1" checked />
+                    <span asp-validation-for="SelectedBenefits" class="text-danger"></span>
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 </div>
                 <div>
                     <input type="submit" value="Salvar" class="button" />

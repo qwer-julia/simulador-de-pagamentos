@@ -54,7 +54,7 @@ namespace BenefitsManager.Controllers
         public async Task<IActionResult> Create()
 
         {
-            var benefits = await _context.Benefits.Where(b => b.Id != 1).ToListAsync();
+            var benefits = await _context.Benefits.ToListAsync();
             ViewBag.Benefits = benefits;
             return View();
         }
@@ -65,8 +65,14 @@ namespace BenefitsManager.Controllers
         public async Task<IActionResult> Create([Bind("Id,Cnpj,CompanyName,OpeningDate,TaxationRegime")] Taxpayer taxpayer, List<int> SelectedBenefits)
         {
             ViewBag.Benefits = _context.Benefits.ToList();
-            Console.WriteLine(taxpayer.Cnpj);
-            Console.WriteLine(taxpayer.Cnpj.GetType());
+
+            if (SelectedBenefits == null || !SelectedBenefits.Any())
+            {
+                ModelState.AddModelError("SelectedBenefits", "Selecione pelo menos um benefício.");
+
+                ViewBag.Benefits = _context.Benefits.ToList();
+                return View(taxpayer);
+            }
 
             if (CnpjAlreadyInUse(taxpayer.Cnpj, taxpayer.Id))
             {
@@ -74,25 +80,21 @@ namespace BenefitsManager.Controllers
                 return View(taxpayer);
             }
 
-            if (ModelState.IsValid)
+            _context.Add(taxpayer);
+            await _context.SaveChangesAsync();
+
+            foreach (var benefitId in SelectedBenefits)
             {
-                _context.Add(taxpayer);
-                await _context.SaveChangesAsync();
-
-                foreach (var benefitId in SelectedBenefits)
+                var taxpayerBenefit = new TaxpayerBenefit
                 {
-                    var taxpayerBenefit = new TaxpayerBenefit
-                    {
-                        TaxpayerId = taxpayer.Id,
-                        BenefitId = benefitId
-                    };
+                    TaxpayerId = taxpayer.Id,
+                    BenefitId = benefitId
+                };
 
-                    _context.TaxpayerBenefits.Add(taxpayerBenefit);
-                }
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                _context.TaxpayerBenefits.Add(taxpayerBenefit);
             }
-            return View(taxpayer);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Taxpayers/Edit/5
@@ -108,7 +110,7 @@ namespace BenefitsManager.Controllers
             .ThenInclude(tb => tb.Benefit)
             .FirstOrDefaultAsync(t => t.Id == id);
 
-            var benefits = await _context.Benefits.Where(b => b.Id != 1).ToListAsync();
+            var benefits = await _context.Benefits.ToListAsync();
             ViewBag.Benefits = benefits;
 
 
@@ -140,6 +142,12 @@ namespace BenefitsManager.Controllers
             if (CnpjAlreadyInUse(taxpayer.Cnpj, id))
             {
                 ModelState.AddModelError("Cnpj", "CNPJ já cadastrado");
+                return View(taxpayer);
+            }
+
+            if (SelectedBenefits == null || !SelectedBenefits.Any())
+            {
+                ModelState.AddModelError("SelectedBenefits", "Selecione pelo menos um benefício.");
                 return View(taxpayer);
             }
 

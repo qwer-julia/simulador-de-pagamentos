@@ -21,6 +21,12 @@ namespace BenefitsManager.Data
             .HasIndex(t => t.Cnpj)
             .IsUnique();
 
+            modelBuilder.Entity<Taxpayer>()
+                .HasMany(t => t.TaxpayerBenefits)
+                .WithOne(tb => tb.Taxpayer)
+                .HasForeignKey(tb => tb.TaxpayerId)
+                .IsRequired();
+
             modelBuilder.Entity<TaxpayerBenefit>()
                 .HasKey(tb => new { tb.TaxpayerId, tb.BenefitId });
 
@@ -51,7 +57,7 @@ namespace BenefitsManager.Data
             modelBuilder.Entity<Benefit>().HasData(new Benefit
             {
                 Id = 1,
-                Name = "Sem Benefício",
+                Name = "Desconto zerado",
                 DiscountPercentage = 0
             });
 

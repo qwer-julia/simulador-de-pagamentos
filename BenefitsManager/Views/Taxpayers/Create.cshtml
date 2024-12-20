@@ -41,7 +41,11 @@
                             <label>@benefit.Name (@benefit.DiscountPercentage%)</label>
                         </div>
                     }
-                    <input type="hidden" name="SelectedBenefits" value="1" checked/>
+                    <span asp-validation-for="SelectedBenefits" class="text-danger"></span>
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+
                 </div>
                 
                 <div>

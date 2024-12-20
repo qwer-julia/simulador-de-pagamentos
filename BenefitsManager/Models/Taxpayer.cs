@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BenefitsManager.Models
 {
@@ -24,5 +25,9 @@ namespace BenefitsManager.Models
         public string TaxationRegime { get; set; }
 
         public ICollection<TaxpayerBenefit>? TaxpayerBenefits { get; set; }
+        [NotMapped]
+
+        [Required(ErrorMessage = "É necessário selecionar pelo menos 1 benefício")]
+        public List<int> SelectedBenefits { get; set; }
     }
 }
