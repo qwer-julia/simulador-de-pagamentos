@@ -68,7 +68,7 @@ namespace BenefitsManager.Controllers
 
             if (SelectedBenefits == null || !SelectedBenefits.Any())
             {
-                ModelState.AddModelError("SelectedBenefits", "Selecione pelo menos um benefício.");
+                ViewData["SelectedBenefitsError"] = "Selecione pelo menos um benefício.";
 
                 ViewBag.Benefits = _context.Benefits.ToList();
                 return View(taxpayer);
@@ -147,7 +147,8 @@ namespace BenefitsManager.Controllers
 
             if (SelectedBenefits == null || !SelectedBenefits.Any())
             {
-                ModelState.AddModelError("SelectedBenefits", "Selecione pelo menos um benefício.");
+                ViewData["SelectedBenefitsError"] = "Selecione pelo menos um benefício.";
+                ViewBag.Benefits = await _context.Benefits.ToListAsync();
                 return View(taxpayer);
             }
 

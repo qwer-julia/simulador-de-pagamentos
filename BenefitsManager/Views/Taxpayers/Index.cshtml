@@ -48,7 +48,7 @@
                         @Html.DisplayFor(modelItem => item.TaxationRegime)
                     </td>
                     <td>
-                        @if (item.TaxpayerBenefits.Any(tb => tb.BenefitId != 1))
+                        @if (item.TaxpayerBenefits.Any())
                         {
                             <span>Sim</span>
                         }

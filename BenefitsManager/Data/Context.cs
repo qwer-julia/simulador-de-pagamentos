@@ -22,10 +22,10 @@ namespace BenefitsManager.Data
             .IsUnique();
 
             modelBuilder.Entity<Taxpayer>()
-                .HasMany(t => t.TaxpayerBenefits)
-                .WithOne(tb => tb.Taxpayer)
-                .HasForeignKey(tb => tb.TaxpayerId)
-                .IsRequired();
+            .HasMany(t => t.TaxpayerBenefits)
+            .WithOne(tb => tb.Taxpayer)
+            .HasForeignKey(tb => tb.TaxpayerId)
+            .IsRequired();
 
             modelBuilder.Entity<TaxpayerBenefit>()
                 .HasKey(tb => new { tb.TaxpayerId, tb.BenefitId });

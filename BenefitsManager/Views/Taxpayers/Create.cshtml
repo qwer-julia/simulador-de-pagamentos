@@ -41,9 +41,12 @@
                             <label>@benefit.Name (@benefit.DiscountPercentage%)</label>
                         </div>
                     }
-                    <span asp-validation-for="SelectedBenefits" class="text-danger"></span>
-
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="text-danger">
+                        @if (!string.IsNullOrEmpty(ViewData["SelectedBenefitsError"] as string))
+                        {
+                            <span>@ViewData["SelectedBenefitsError"]</span>
+                        }
+                    </div>
 
 
                 </div>

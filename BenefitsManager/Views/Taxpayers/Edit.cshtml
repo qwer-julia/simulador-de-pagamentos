@@ -35,27 +35,23 @@
 
                 <div class="benefit-form">
                     <h4>Benefícios:</h4>
-
                     @foreach (var benefit in ViewBag.Benefits)
                     {
                         <div class="benefit-option">
-                            @if (Model.TaxpayerBenefits != null && Model.TaxpayerBenefits.Any(tb => tb.BenefitId == benefit.Id))
-                            {
-                                <input type="checkbox" name="SelectedBenefits" value="@benefit.Id" checked />
-                            }
-                            else
-                            {
-                                <input type="checkbox" name="SelectedBenefits" value="@benefit.Id" />
-                            }
-
+                            <input type="checkbox" name="SelectedBenefits" value="@benefit.Id"
+                            @(Model.TaxpayerBenefits != null && Model.TaxpayerBenefits.Any(tb => tb.BenefitId == benefit.Id) ? "checked" : "") />
                             <label>@benefit.Name (@benefit.DiscountPercentage%)</label>
                         </div>
-
                     }
-                    <span asp-validation-for="SelectedBenefits" class="text-danger"></span>
-
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="text-danger">
+                        @if (!string.IsNullOrEmpty(ViewData["SelectedBenefitsError"] as string))
+                        {
+                            <span>@ViewData["SelectedBenefitsError"]</span>
+                        }
+                    </div>
                 </div>
+
+
                 <div>
                     <input type="submit" value="Salvar" class="button" />
                     <a class="button-back" asp-action="Index">Voltar</a>

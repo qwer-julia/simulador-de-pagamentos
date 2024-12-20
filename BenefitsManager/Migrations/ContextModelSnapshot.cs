@@ -46,7 +46,7 @@ namespace BenefitsManager.Migrations
                         {
                             Id = 1,
                             DiscountPercentage = 0f,
-                            Name = "Sem Benefício"
+                            Name = "Desconto Zerado"
                         });
                 });
 

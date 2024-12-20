@@ -13,7 +13,7 @@ namespace BenefitsManager.Migrations
             migrationBuilder.InsertData(
                 table: "Benefits",
                 columns: new[] { "Id", "DiscountPercentage", "Name" },
-                values: new object[] { 1, 0f, "Sem Benefício" });
+                values: new object[] { 1, 0f, "Desconto Zerado" });
         }
 
         /// <inheritdoc />
