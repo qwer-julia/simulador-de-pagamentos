@@ -50,35 +50,6 @@ namespace BenefitsManager.Migrations
                         });
                 });
 
-            modelBuilder.Entity("BenefitsManager.Models.Payment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("BenefitId")
-                        .HasColumnType("integer");
-
-                    b.Property<float>("FinalValue")
-                        .HasColumnType("real");
-
-                    b.Property<float>("InitialValue")
-                        .HasColumnType("real");
-
-                    b.Property<int>("TaxpayerId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BenefitId");
-
-                    b.HasIndex("TaxpayerId");
-
-                    b.ToTable("Payments");
-                });
-
             modelBuilder.Entity("BenefitsManager.Models.Taxpayer", b =>
                 {
                     b.Property<int>("Id")
@@ -125,23 +96,6 @@ namespace BenefitsManager.Migrations
                     b.ToTable("TaxpayerBenefits");
                 });
 
-            modelBuilder.Entity("BenefitsManager.Models.Payment", b =>
-                {
-                    b.HasOne("BenefitsManager.Models.Benefit", "Benefit")
-                        .WithMany()
-                        .HasForeignKey("BenefitId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("BenefitsManager.Models.Taxpayer", "Taxpayer")
-                        .WithMany()
-                        .HasForeignKey("TaxpayerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Benefit");
-
-                    b.Navigation("Taxpayer");
-                });
 
             modelBuilder.Entity("BenefitsManager.Models.TaxpayerBenefit", b =>
                 {

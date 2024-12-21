@@ -8,7 +8,6 @@ namespace BenefitsManager.Data
         public DbSet<Benefit> Benefits { get; set; }
         public DbSet<Taxpayer> Taxpayers { get; set; }
         public DbSet<TaxpayerBenefit> TaxpayerBenefits { get; set; }
-        public DbSet<Payment> Payments { get; set; }
 
         public Context(DbContextOptions<Context> options)
             : base(options) { }
@@ -41,18 +40,6 @@ namespace BenefitsManager.Data
                 .WithMany(b => b.TaxpayerBenefits)
                 .HasForeignKey(tb => tb.BenefitId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<Payment>()
-                .HasOne(p => p.Taxpayer)
-                .WithMany()
-                .HasForeignKey(p => p.TaxpayerId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Payment>()
-                .HasOne(p => p.Benefit)
-                .WithMany()
-                .HasForeignKey(p => p.BenefitId)
-                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Benefit>().HasData(new Benefit
             {

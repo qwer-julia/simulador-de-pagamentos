@@ -43,34 +43,6 @@ namespace BenefitsManager.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Payments",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    InitialValue = table.Column<float>(type: "real", nullable: false),
-                    FinalValue = table.Column<float>(type: "real", nullable: false),
-                    TaxpayerId = table.Column<int>(type: "integer", nullable: false),
-                    BenefitId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Payments", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Payments_Benefits_BenefitId",
-                        column: x => x.BenefitId,
-                        principalTable: "Benefits",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Payments_Taxpayers_TaxpayerId",
-                        column: x => x.TaxpayerId,
-                        principalTable: "Taxpayers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "TaxpayerBenefits",
                 columns: table => new
                 {
@@ -93,16 +65,6 @@ namespace BenefitsManager.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Payments_BenefitId",
-                table: "Payments",
-                column: "BenefitId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Payments_TaxpayerId",
-                table: "Payments",
-                column: "TaxpayerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TaxpayerBenefits_BenefitId",
