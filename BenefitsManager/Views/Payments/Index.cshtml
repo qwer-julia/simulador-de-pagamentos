@@ -1,60 +1,31 @@
-﻿@model IEnumerable<BenefitsManager.Models.Payment>
-
-@{
-    ViewData["Title"] = "Pagamentos";
+﻿@{
+    ViewData["Title"] = "Simular pagamento";
 }
 
 <section>
-    <h1>Histórico de Pagamentos</h1>
+    <h1>Simular pagamento</h1>
 
-    <p>
-        <a class="button" asp-action="SearchTaxpayer">Cadastrar Novo</a>
-    </p>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.InitialValue)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.FinalValue)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Taxpayer)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Benefit)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.InitialValue)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FinalValue)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Taxpayer.Cnpj)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Benefit.Name)
-                    </td>
-                    <td>
-                        <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" class="trash-icon">
-                                <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 0 0 6 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 1 0 .23 1.482l.149-.022.841 10.518A2.75 2.75 0 0 0 7.596 19h4.807a2.75 2.75 0 0 0 2.742-2.53l.841-10.52.149.023a.75.75 0 0 0 .23-1.482A41.03 41.03 0 0 0 14 4.193V3.75A2.75 2.75 0 0 0 11.25 1h-2.5ZM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4ZM8.58 7.72a.75.75 0 0 0-1.5.06l.3 7.5a.75.75 0 1 0 1.5-.06l-.3-7.5Zm4.34.06a.75.75 0 1 0-1.5-.06l-.3 7.5a.75.75 0 1 0 1.5.06l.3-7.5Z" clip-rule="evenodd" />
-                            </svg>
-                        </a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
+    }
+
+    <form asp-action="SearchTaxpayer" method="post">
+        <div class="form-group">
+            <div class="search-form">
+                <input type="text" class="form-control search-bar" id="cnpj" name="cnpj" placeholder="Informe o CNPJ do contribuinte" required />
+                <button type="submit" class="button search-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" class="search-icon">
+                        <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <div class="group-buttons">
+        <a class="button-back" asp-action="Index">Voltar</a>
+    </div>
 </section>
-
