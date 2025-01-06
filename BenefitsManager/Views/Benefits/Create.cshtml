@@ -19,7 +19,7 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="DiscountPercentage" class="control-label"></label>
-                    <input asp-for="DiscountPercentage" class="form-control" type="number" />
+                    <input asp-for="DiscountPercentage" class="form-control" type="number" min="0" max="100" />
                     <span asp-validation-for="DiscountPercentage" class="text-danger"></span>
                 </div>
                 <div class="form-group group-buttons">
