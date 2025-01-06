@@ -12,6 +12,7 @@ namespace BenefitsManager.Models
         public string Name { get; set; }
 
         [Display(Name = "Percentual de desconto")]
+        [Range(0, 100, ErrorMessage = "O desconto deve estar entre 0 e 100")]
         [Required(ErrorMessage = "Digite o percentual de desconto.")]
         public float DiscountPercentage { get; set; }
 
